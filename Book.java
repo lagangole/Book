@@ -1,9 +1,8 @@
 import ecs100.*;
+import java.awt.Color;
 /**
  * Support class for Books
  * A Book contains an id, name, author, quantity, image
- * 
- * ? add likes?
  * 
  * @author WGT
  * @version (a version number or a date)
@@ -34,6 +33,7 @@ public class Book
         }else{
             this.image = img;
         }
+        
     }
     
     /**
@@ -54,8 +54,15 @@ public class Book
         
         final double WIDTH = 250;
         final double HEIGHT = 300;
+        // Clear the previous text area
+        UI.setColor(Color.white); // or whatever your background color is
+        UI.fillRect(locX, locY + HEIGHT + 5, 100, 20); // adjust width/height as needed
         
+        // Draw the updated text
+        UI.setColor(Color.black); // reset text color
+
         UI.drawImage(this.image, locX, locY, WIDTH, HEIGHT);
+        UI.drawString("Likes: " + getLike(), locX, locY+ HEIGHT + 20);
     }
 
     /**

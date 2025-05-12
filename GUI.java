@@ -2,9 +2,6 @@ import ecs100.*;
 /**
  * GUI class for books manager 
  * Allows add, print, find books on GUI
- * 
- * ??? click the book cover to like the book
- * ??? show the total number of likes
  *
  * @author WGT
  * @version 8 April
@@ -28,9 +25,10 @@ public class GUI
         UI.addButton("Print All", books::printAllBooks);
         UI.addButton("Add", this::addBook);
         UI.addButton("Find", this::findBook);
-        UI.addButton("Quit", UI::quit);
         UI.addButton("Delete", this::deleteBook);
+        UI.addButton("Remove", this::removeBook);
         UI.addButton("Like", this::likeBook);
+        UI.addButton("Quit", UI::quit);
 
     }
 
@@ -73,8 +71,9 @@ public class GUI
      */
     public void findBook(){
         String bookName = UI.askString("Name of Book: ");
+        String bookAuth = UI.askString("Author of Book: ");
 
-        if(this.books.findBook(bookName.toLowerCase().trim())){ // Refer back to Books instance books method findBook to return true or false
+        if(this.books.findBook(bookName.toLowerCase().trim(),bookAuth.toLowerCase().trim()) != null){ // Refer back to Books instance books method findBook to return true or false
 
             this.book = books.getBook(); 
             UI.println("Found Book!");
@@ -95,25 +94,20 @@ public class GUI
      */
     public void deleteBook(){
         String bookName = UI.askString("Name of Book: ");
-        Book book = books.findBook(bookName.trim().toLowerCase());
+        String bookAuth = UI.askString("Author of Book: ");
+        
+        Book book = books.findBook(bookName.trim().toLowerCase(),bookAuth.trim().toLowerCase());
     
         if (book != null) {
             // Display the book details before asking for confirmation
             UI.println("Book found!");
-            book.displayBook();
-            UI.println("Author: " + book.getAuthor());
-            UI.println("Quantity: " + book.getQuantity());
+
     
-            String confirmation = UI.askString("Do you want to delete this book? (yes/no): ");
+            String confirmation = UI.askString("Do you want to delete a book of the collection? (yes/no): ");
             if (confirmation.equalsIgnoreCase("yes")) {
-                if (book.getQuantity() > 1) {
-                    book.decreaseQuantity();
-                    UI.println("Quantity decreased by 1. New quantity: " + book.getQuantity());
-                } else {
-                    books.removeBook(book);
-                    UI.println("Book removed from library.");
-                }
-            } else {
+                this.books.deleteBook(bookName, bookAuth);
+            } 
+            else {
                 UI.println("Book deletion cancelled.");
             }
         } else {
@@ -122,11 +116,42 @@ public class GUI
     }
     
     /**
+     * Remove bookId
+     */
+    public void removeBook(){
+        String bookName = UI.askString("Name of Book: ");
+        String bookAuth = UI.askString("Author of Book: ");
+        Book book = books.findBook(bookName.trim().toLowerCase(),bookAuth.trim().toLowerCase());
+        if (book != null) {
+            // Display the book details before asking for confirmation
+            UI.println("Book found!");
+            book.displayBook();
+            UI.println("Author: " + book.getAuthor());
+            UI.println("Quantity: " + book.getQuantity());
+    
+            String confirmation = UI.askString("Do you want to remove this book?(yes/no): ");
+            if (confirmation.equalsIgnoreCase("yes")) {
+                this.books.removeBook(bookName);
+                UI.println("Remove success");
+            } else if (confirmation.equalsIgnoreCase("no")) {
+                UI.println("Book deletion cancelled.");
+            }
+            else {
+                UI.println("Try again");
+            }
+        } else {
+            UI.println("That book does not exist!");
+        }
+        
+    }
+    
+    /**
      * Like a book
      */
     public void likeBook(){
         String bookName = UI.askString("Name of Book: ");
-        Book book = books.findBook(bookName);  // directly get the book
+        String bookAuth = UI.askString("Author of Book: ");
+        Book book = books.findBook(bookName, bookAuth);  // directly get the book
     
         if (book != null) {
             book.displayBook();
