@@ -29,6 +29,8 @@ public class GUI
         UI.addButton("Remove", this::removeBook);
         UI.addButton("Like", this::likeBook);
         UI.addButton("Quit", UI::quit);
+        //Set up the mouse input
+        UI.setMouseListener(this::doMouse);
 
     }
 
@@ -166,6 +168,21 @@ public class GUI
         } else {
             UI.println("That book does not exist!");
         }   
+    }
+    
+    /**
+     * 
+     */
+    public void doMouse(String action, double x, double y) {
+        if (action.equals("clicked")) {
+            for (int bookId : books.getLibrary().keySet()){  // assuming library is your Map of books
+                Book book = books.getLibrary().get(bookId);
+                if (book.wasClicked(x, y)) {
+                    book.increaseLike();
+                    book.displayBook();  // redisplay to update the like count
+                }
+            }
+        }
     }
     
     /**

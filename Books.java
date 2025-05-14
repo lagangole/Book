@@ -41,6 +41,10 @@ public class Books
         
     }
     
+    public HashMap<Integer, Book> getLibrary() {
+        return this.library;
+    }
+    
     /**
      * Set bookId, increment by 1 
      */

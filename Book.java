@@ -16,6 +16,7 @@ public class Book
     private int quantity;
     private String image;
     private int likes = 0;
+    private double imageX, imageY, imageWidth, imageHeight;
     static final String DEFAULT_IMAGE = "book.jpg"; // Set a default image
 
     /**
@@ -53,6 +54,11 @@ public class Book
         double spacing = 18;
         double width = (canvasWidth - spacing * (booksPerRow + 1)) / booksPerRow;
         double height = width * 1.2; // maintain aspect ratio
+        
+        this.imageX = locX;
+        this.imageY = locY;
+        this.imageWidth = width;
+        this.imageHeight = height;
 
         // Clear the previous text area
         UI.setColor(Color.white); // or whatever your background color is
@@ -71,9 +77,14 @@ public class Book
         
         int locX = 100; // image x start position
         int locY = 100; // image y start position
-        
         final double WIDTH = 250;
         final double HEIGHT = 300;
+        
+        this.imageX = locX;
+        this.imageY = locY;
+        this.imageWidth = WIDTH;
+        this.imageHeight = HEIGHT;
+        
         // Clear the previous text area
         UI.setColor(Color.white); // or whatever your background color is
         UI.fillRect(locX, locY + HEIGHT + 5, 100, 20); // adjust width/height as needed
@@ -84,6 +95,16 @@ public class Book
         UI.drawImage(this.image, locX, locY, WIDTH, HEIGHT);
         UI.drawString("Likes: " + getLike(), locX, locY+ HEIGHT + 30);
         UI.drawString(getName()+ " by " + getAuthor(), locX, locY+ HEIGHT + 14);
+    }
+    
+    public boolean wasClicked(double mouseX, double mouseY) {
+        if ((mouseX >= imageX) && (mouseX <= imageX + imageWidth) &&
+               (mouseY >= imageY) && (mouseY <= imageY + imageHeight)){
+                   return true;
+        }
+        else{
+            return false;
+        }
     }
     
     /**
