@@ -101,11 +101,10 @@ public class GUI
         if (book != null) {
             // Display the book details before asking for confirmation
             UI.println("Book found!");
-
     
             String confirmation = UI.askString("Do you want to delete a book of the collection? (yes/no): ");
             if (confirmation.equalsIgnoreCase("yes")) {
-                this.books.deleteBook(bookName, bookAuth);
+                this.books.deleteBook(book);
             } 
             else {
                 UI.println("Book deletion cancelled.");
@@ -131,7 +130,7 @@ public class GUI
     
             String confirmation = UI.askString("Do you want to remove this book?(yes/no): ");
             if (confirmation.equalsIgnoreCase("yes")) {
-                this.books.removeBook(bookName);
+                this.books.removeBook(bookName, bookAuth);
                 UI.println("Remove success");
             } else if (confirmation.equalsIgnoreCase("no")) {
                 UI.println("Book deletion cancelled.");

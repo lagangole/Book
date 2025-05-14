@@ -92,18 +92,36 @@ public class Books
         }
     }
     
+    
     /**
      * Print all books
      * GUI 
      */
     public void printAllBooks(){
+        UI.clearGraphics();  // Clears everything on the canvas
+        double canvasWidth = UI.getCanvasWidth(); // get screen size
+        double spacing = 20;
+        int booksPerRow = 3;
+        double imageWidth = (canvasWidth - spacing * (booksPerRow + 1)) / booksPerRow;
+        double imageHeight = imageWidth * 1.2;
+        int count = 0;
+        
         //Traverse Map
         for (int bookId : this.library.keySet()){
+            // Calculate grid position
+            int col = count % booksPerRow;
+            int row = count / booksPerRow;
+    
+            double locX = spacing + col * (imageWidth + spacing);
+            double locY = spacing + row * (imageHeight + 60);  // extra space for text
+
             UI.println(bookId + " Details: ");
-            UI.println(this.library.get(bookId).getName() + " "
-                        +this.library.get(bookId).getAuthor() + " "
-                        +this.library.get(bookId).getQuantity() + " "
-                        +this.library.get(bookId).getLike()+ " ");
+            UI.println("Title: "+ this.library.get(bookId).getName() + "\nAuthor: "
+                        + this.library.get(bookId).getAuthor() + "\nAvailable copies: "
+                        +this.library.get(bookId).getQuantity() + "\nLikes: "
+                        +this.library.get(bookId).getLike()+" \n");
+            this.library.get(bookId).displayBooks(locX, locY, canvasWidth);  // shift each book;
+            count++;
         }
     }
     
@@ -149,32 +167,16 @@ public class Books
     
     /**
      * delete a quantity
-     * @param name, author, qty
+     * @param name, author
      */
-    public void deleteBook(String name, String author) {
-        name = name.trim().toLowerCase();
-        author = author.trim().toLowerCase();
-    
-        // Loop through the map to find the book
-        for (int bookId : this.library.keySet()) {
-            Book book = this.library.get(bookId);
-    
-            // Check if the book matches name and author
-            if (book.getName().toLowerCase().equals(name) && book.getAuthor().toLowerCase().equals(author)) {
-                // Decrease the quantity
-                if (book.getQuantity() > 1) {
-                    book.decreaseQuantity();  // Decreases the quantity by 1
-                    UI.println("Quantity decreased by 1. New quantity: " + book.getQuantity());
-                } else {
-                    // If quantity is 1 or less, remove the book from the library
-                    this.library.remove(bookId);
-                    UI.println("Book removed from the library.");
-                }
-                return;  // Exit after processing the book
-            }
-            else{
-                UI.println("That book does not exist!");
-            }
+    public void deleteBook(Book book){
+        // Decrease the quantity
+        if (book.getQuantity() > 1) {
+            book.decreaseQuantity();  // Decreases the quantity by 1
+            System.out.println("Quantity decreased by 1. New quantity: " + book.getQuantity());
+        } else {
+            // If quantity is 1 or less, remove the book from the library
+            removeBook(book.getName(), book.getAuthor());
         }
 
     }
@@ -183,19 +185,16 @@ public class Books
      * Remove a book of the map
      * @param name, author, qty
      */
-    public void removeBook(String name){
+    public void removeBook(String name, String auth){
         for (int bookId : this.library.keySet()){
             Book b = this.library.get(bookId);
-            if (b.getName().equals(name)){
+            if (b.getName().equalsIgnoreCase(name) && b.getAuthor().equalsIgnoreCase(auth)){
                 this.library.remove(bookId);
-                UI.println("Remove success");
-                break;
-            }
-            else{
-                UI.println("Book not found");
-                break;
+                System.out.println("Remove success");
+                return;
             }
         }
+        System.out.println("Book not found");
     }
     
     /**
@@ -300,16 +299,23 @@ public class Books
                     }
                     break;
                 case "R":
-                    System.out.print("\nEnter book title: ");
+                    System.out.print("\nEnter book title to remove: ");
                     String Rtitle = scanner.nextLine();
-                    removeBook(Rtitle);
+                    System.out.print("Enter book author: ");
+                    String Rauth = scanner.nextLine();
+                    removeBook(Rtitle, Rauth);
                     break;
                 case "D":
                     System.out.print("\nEnter book title: ");
                     String Dtitle = scanner.nextLine();
                     System.out.print("Enter author: ");
-                    String Dauthor = scanner.nextLine();
-                    deleteBook(Dtitle, Dauthor);
+                    String Dauth = scanner.nextLine();
+                    Book bookToDelete = findBook(Dtitle, Dauth);
+                    if (bookToDelete != null) {
+                        deleteBook(bookToDelete);
+                    } else {
+                        System.out.println("Book not found.");
+                    }
                     break;
                 case "Q":
                     System.out.println("Goodbye");

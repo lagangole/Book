@@ -48,7 +48,27 @@ public class Book
     /**
      * Display image on GUI
      */
-    public void displayBook() {
+    public void displayBooks(double locX, double locY, double canvasWidth) {
+        final int booksPerRow = 3;
+        double spacing = 18;
+        double width = (canvasWidth - spacing * (booksPerRow + 1)) / booksPerRow;
+        double height = width * 1.2; // maintain aspect ratio
+
+        // Clear the previous text area
+        UI.setColor(Color.white); // or whatever your background color is
+        UI.fillRect(locX, locY + height + 5, width, 20); // adjust width/height as needed
+        
+        // Draw the updated text
+        UI.setColor(Color.black); // reset text color
+
+        UI.drawImage(this.image, locX, locY, width, height);
+        UI.drawString("Likes: " + getLike(), locX, locY+ height + 30);
+        UI.drawString(getName()+ " by " + getAuthor(), locX, locY+ height + 14);
+    }
+    
+    public void displayBook(){
+        UI.clearGraphics();  // Clears everything on the canvas
+        
         int locX = 100; // image x start position
         int locY = 100; // image y start position
         
@@ -62,9 +82,10 @@ public class Book
         UI.setColor(Color.black); // reset text color
 
         UI.drawImage(this.image, locX, locY, WIDTH, HEIGHT);
-        UI.drawString("Likes: " + getLike(), locX, locY+ HEIGHT + 20);
+        UI.drawString("Likes: " + getLike(), locX, locY+ HEIGHT + 30);
+        UI.drawString(getName()+ " by " + getAuthor(), locX, locY+ HEIGHT + 14);
     }
-
+    
     /**
      * Getter for id
      * @return integer id number of obj book
