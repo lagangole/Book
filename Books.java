@@ -5,8 +5,7 @@ import ecs100.*;
  * Holds a collection of books in a hashmap
  * Allows a user to add, find, print all 
  * 
- * ??? delete
- * ??? prevent user from adding a duplicate
+ * what I haven't done : comment, test, add boundry to other cases
  *
  * @author WGT
  * @version (a version number or a date)
@@ -50,7 +49,6 @@ public class Books
      */
     public void setBookId(){
         this.currBookId += 1;
-        
     }
     
     /**
@@ -95,7 +93,6 @@ public class Books
                         +this.library.get(bookId).getLike()+" \n");
         }
     }
-    
     
     /**
      * Print all books
@@ -173,16 +170,16 @@ public class Books
      * delete a quantity
      * @param name, author
      */
-    public void deleteBook(Book book){
+    public int deleteBook(Book book){
         // Decrease the quantity
         if (book.getQuantity() > 1) {
             book.decreaseQuantity();  // Decreases the quantity by 1
-            System.out.println("Quantity decreased by 1. New quantity: " + book.getQuantity());
+            return book.getQuantity();
         } else {
             // If quantity is 1 or less, remove the book from the library
             removeBook(book.getName(), book.getAuthor());
+            return 0;
         }
-
     }
     
     /**
@@ -245,7 +242,7 @@ public class Books
                     
                     boolean valid = false;
                     int qty = 0;
-                    // try and except
+                    // try and except - probably create a sperate method for this
                     while (!valid) {
                         System.out.print("Enter quantity: ");
                         String input = scanner.nextLine();
@@ -253,6 +250,9 @@ public class Books
                             qty = Integer.parseInt(input); // converts string to int
                             if (qty > 0) {
                                 valid = true;
+                            }
+                            else if (qty < 100){
+                                System.out.println("That's too many, try again: ");
                             }
                             else {
                                 System.out.println("Please enter a positive number.");
@@ -263,7 +263,6 @@ public class Books
                         }
                     }
                 
-                    
                     // call addBook method with 3 param: title, author, qty
                     this.addBook(title, author, qty);
                     System.out.println("Book added successfully! ID: " + this.currBookId);
@@ -316,7 +315,8 @@ public class Books
                     String Dauth = scanner.nextLine();
                     Book bookToDelete = findBook(Dtitle, Dauth);
                     if (bookToDelete != null) {
-                        deleteBook(bookToDelete);
+                        System.out.println("Quantity decreased by 1. New quantity: " 
+                        + deleteBook(bookToDelete));
                     } else {
                         System.out.println("Book not found.");
                     }

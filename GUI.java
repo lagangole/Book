@@ -106,8 +106,9 @@ public class GUI
     
             String confirmation = UI.askString("Do you want to delete a book of the collection? (yes/no): ");
             if (confirmation.equalsIgnoreCase("yes")) {
-                this.books.deleteBook(book);
-            } 
+                UI.println("Quantity decreased by 1. New quantity: " 
+                        + this.books.deleteBook(book));
+            }
             else {
                 UI.println("Book deletion cancelled.");
             }
@@ -162,6 +163,7 @@ public class GUI
             if (confirmation.equalsIgnoreCase("yes")) {
                 book.increaseLike();
                 UI.println("Book liked successfully! Total likes: " + book.getLike());
+                book.displayBook();
             } else {
                 UI.println("Book like cancelled.");
             }
@@ -171,11 +173,11 @@ public class GUI
     }
     
     /**
-     * 
+     * doMouse - response to click on image to increase lie
      */
-    public void doMouse(String action, double x, double y) {
+    public void doMouse(String action, double x, double y){
         if (action.equals("clicked")) {
-            for (int bookId : books.getLibrary().keySet()){  // assuming library is your Map of books
+            for (int bookId : books.getLibrary().keySet()){
                 Book book = books.getLibrary().get(bookId);
                 if (book.wasClicked(x, y)) {
                     book.increaseLike();
